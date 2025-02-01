@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: ../../ # Caminho para a raiz do backend
+      dockerfile: ./infra/docker/Dockerfile.backend # Aqui você especifica o nome e caminho do Dockerfile
+    image: docker-backend # Nome explícito para a imagem
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_USER: postgres
+      DB_PASSWORD: 1234
+      DB_NAME: tasks
+    restart: always # Garantir que o serviço seja reiniciado em caso de falha
+
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: tasks
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always # Reiniciar o banco em caso de falha
+
+volumes:
+  postgres_data: # Definição explícita do volume
